@@ -1,10 +1,6 @@
 ﻿using Store.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using Store.Repository.Specifications;
+using Store.Repository.Specifications.ProductSpecs;
 namespace Store.Repository.Interfaces
 {
     public interface IGenericRepository<TEntity , TKey> where TEntity :BaseEntity<TKey>
@@ -15,6 +11,11 @@ namespace Store.Repository.Interfaces
         Task TaskAddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
+        Task<TEntity> GetWithSpecificationByIdAsinc(ISpecification<TEntity> spec); //Take specification
+        Task<IReadOnlyList<TEntity>> GetAllWithSpecificationAsinc(ISpecification<TEntity> spec);  //Take specification
+        Task<int> GetCountAsync(ISpecification<TEntity> spec); // --> Count
 
     }
+
+   
 }

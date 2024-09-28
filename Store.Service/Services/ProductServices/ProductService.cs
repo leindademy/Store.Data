@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Store.Data.Entities;
 using Store.Repository.Interfaces;
+using Store.Repository.Specifications.ProductSpecs;
+using Store.Service.Helper;
 using Store.Service.Services.ProductService.ProductServices;
 using Store.Service.Services.ProductService.ProductServices.Dtos;
 using System.Collections.Generic;
@@ -25,11 +27,19 @@ namespace Store.Service.Services.ProductServices
             return mappedBrands;
         }
 
-        public async Task<IReadOnlyList<ProductDetailsDto>> GetAllProductsAsync()
+        public async Task<PaginatedResultDto<ProductDetailsDto>> GetAllProductsAsync(ProductSpecification input)
         {
-            var products = await _unitOFWork.Repository<ProductEntity, int>().GetAllAsNotTrackAsinc();
+            var spec = new ProductWithSpecifications(input);
+
+            var products = await _unitOFWork.Repository<ProductEntity, int>().GetAllWithSpecificationAsinc(spec);
+
+            var CountSpecs = new ProductWithCountSpecification(input);
+
+            var Count = await _unitOFWork.Repository<ProductEntity, int>().GetCountAsync(CountSpecs);
+
             var mappedproducts = _mapper.Map<IReadOnlyList<ProductDetailsDto>>(products);
-            return mappedproducts;
+
+            return new PaginatedResultDto<ProductDetailsDto>(input.PageSize, input.PageIndex,Count, mappedproducts);
         }
 
         public async Task<IReadOnlyList<BrandTypeDetailsDto>> GetAllTypesAsync()
@@ -49,7 +59,9 @@ namespace Store.Service.Services.ProductServices
         {
             if (productId == null)
                 throw new Exception("ProductId Is Null");
-            var product = await _unitOFWork.Repository<ProductEntity, int>().GetByIdAsinc(productId.Value);
+            var spec = new ProductWithSpecifications(productId);
+
+            var product = await _unitOFWork.Repository<ProductEntity, int>().GetWithSpecificationByIdAsinc(spec);
             if (product is null)
                 throw new Exception("Product Is Null");
 
