@@ -5,7 +5,6 @@ using Store.Repository.Specifications.ProductSpecs;
 using Store.Service.Helper;
 using Store.Service.Services.ProductService.ProductServices;
 using Store.Service.Services.ProductService.ProductServices.Dtos;
-using System.Collections.Generic;
 using ProductEntity = Store.Data.Entities.Product;
 
 namespace Store.Service.Services.ProductServices
