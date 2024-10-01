@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Store.Repository.Specifications.ProductSpecs;
+using Store.Service.Helper;
 using Store.Service.Services.ProductService.ProductServices;
 using Store.Service.Services.ProductService.ProductServices.Dtos;
 using Store.Web.Helper;
@@ -31,13 +31,14 @@ namespace Store.Web.Controllers
 
         [HttpGet]
         [Cache(10)]
-        
-        public async Task<ActionResult<IReadOnlyList<ProductDetailsDto>>> GetAllProducts([FromQuery] ProductSpecification input)
-            => Ok(await _productService.GetAllProductsAsync(input));
+        public async Task<PaginatedResultDto<ProductDetailsDto>> GetAllProducts([FromQuery] ProductSpecification input)
+            => (await _productService.GetAllProductsAsync(input));
 
         [HttpGet]
         public async Task<ActionResult<ProductDetailsDto>> GetAllById(int? id)  
           => Ok(await _productService.GetProductBtIdAsync(id));
+
+       
 
     }
 }
