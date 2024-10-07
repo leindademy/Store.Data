@@ -30,7 +30,7 @@ namespace Store.Web.Controllers
             => Ok(await _productService.GetAllTypesAsync());
 
         [HttpGet]
-        [Cache(10)]
+        [Cache(50)]
         public async Task<PaginatedResultDto<ProductDetailsDto>> GetAllProducts([FromQuery] ProductSpecification input)
             => (await _productService.GetAllProductsAsync(input));
 

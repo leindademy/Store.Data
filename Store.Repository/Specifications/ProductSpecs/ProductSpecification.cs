@@ -4,12 +4,14 @@
     {
         public int? BrandId { get; set; }
         public int? TypeId { get; set; }
-        public string Sort { get; set;} 
+        public string? Sort { get; set;}
         public int PageIndex { get; set; } = 1;
 
         private int _PageSize  = 6;
 
         private const int MAXPAGESIZE = 50;
+
+        private string? search;
 
         public int PageSize
         {
@@ -18,11 +20,17 @@
         }
         public string? Search
         {
-            get => Search;
-            set => Search = value?.Trim().ToLower();
+            get => search;
+            set => search = value?.Trim().ToLower();
         }
 
-        
+        //private string? searchName;
+
+        //public string? SearchName
+        //{
+        //    get { return searchName?.Trim().ToLower(); }
+        //    set { searchName = value; }
+        //}
 
     }
 }

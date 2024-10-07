@@ -37,7 +37,7 @@ namespace Store.Web.Helper
                 return;
             }
             var executedContext = await next();
-            if (executedContext.Result is OkObjectResult response)
+            if (executedContext.Result is ObjectResult response)
                 await _cashService.SetCashResponseAsync(cashkey, response.Value, TimeSpan.FromSeconds(_timetoliveseconds));
         }
         private string GetKeyCashFromRequest(HttpRequest request)
