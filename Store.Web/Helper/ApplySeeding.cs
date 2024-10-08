@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Store.Data.Context;
+using Store.Data.Entities.IdentityEntities;
 using Store.Repository;
 
 namespace Store.Web.Helper
@@ -15,8 +17,11 @@ namespace Store.Web.Helper
                 try
                 {
                     var context = services.GetRequiredService<StoreDbContext>();
+                    var UserManager = services.GetRequiredService<UserManager<AppUser>>();
                     await context.Database.MigrateAsync(); // If The DB is Not Created , It Will be Created
+
                     await StoreContextSeed.SeedAsync(context, loggerfactory);
+                    await StoreIdentityContextSeed.SeedUsersAsync(UserManager); 
                 }
                 catch (Exception Ex)
                 {

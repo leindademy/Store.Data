@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Store.Data.Context;
 using Store.Data.Entities;
+using Store.Data.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,19 @@ namespace Store.Repository
                         await context.Products.AddRangeAsync(Products);
                         await context.SaveChangesAsync();
                     }
+                }
+
+                if (context.DeliveryMethods!= null && !context.DeliveryMethods.Any())
+                {
+                    var deliveryMethodsData = File.ReadAllText("../Store.Repository/SeedData/Delivery.json");
+                    var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod >>(deliveryMethodsData);
+
+                    if (deliveryMethods is not null)
+                    {
+                        await context.DeliveryMethods.AddRangeAsync(deliveryMethods);
+                       
+                    }
+                    await context.SaveChangesAsync();
                 }
             }
             catch (Exception exe)
