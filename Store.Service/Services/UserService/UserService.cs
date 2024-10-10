@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Store.Data.Entities.IdentityEntities;
+using Store.Data.Migrations;
 using Store.Service.Services.TokenService;
 using Store.Service.Services.UserService.Dtos;
 using System;
@@ -43,9 +44,35 @@ namespace Store.Service.Services.UserService
             };
         }
 
-        public Task<UserDto> Register(RegisterDto registerDto)
+        public async Task<UserDto> Register(RegisterDto input)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByNameAsync(input.Email);
+
+            if (user is null)
+                return null;
+
+            var appUser = new AppUser
+            {
+                DisplayName = input.DisplayName,
+                Email = input.Email,
+                UserName = input.DisplayName
+
+            };
+
+            var result = await _userManager.CreateAsync(appUser, input.Password);
+            if(!result.Succeeded)
+                throw new Exception(result.Errors.Select(x => x.Description).FirstOrDefault());
+
+
+            return new UserDto
+            {
+                Id = Guid.Parse(appUser.Id),
+                Email = appUser.Email,
+                DisplayName = appUser.DisplayName,
+                Token = _tokenService.GenerateToken(appUser),
+            };
         }
+
+      
     }
 }
