@@ -9,7 +9,8 @@ namespace Store.Data.Entities.IdentityEntities
 {
     public class AppUser : IdentityUser
     {
-        public string DisplsyName { get; set; }
+
         public Address Address { get; set; }
+        public string DisplayName { get; set; }
     }
 }

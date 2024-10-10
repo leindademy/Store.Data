@@ -16,7 +16,7 @@ namespace Store.Repository
             {
                 var user = new AppUser
                 {
-                    DisplsyName= "Leinda Said",
+                    DisplayName= "Leinda Said",
                     Email = "Leinda66@gmail.com",
                     UserName = "LeindaSaid",
                     Address = new Address
