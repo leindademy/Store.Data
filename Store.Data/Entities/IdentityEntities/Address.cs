@@ -14,7 +14,5 @@ namespace Store.Data.Entities.IdentityEntities
         [Required]
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
-
-
     }
 }

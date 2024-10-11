@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Store.Data.Entities.OrderEntities
 {
-    public class ProductItem
+    public class ProductItem : BaseEntity<int>
     {
-
         public int ProductId { get; set; }
-        public string ProductName { get; set; } 
+        public string ProductName { get; set; }
         public string PictureUrl { get; set; }
 
     }
