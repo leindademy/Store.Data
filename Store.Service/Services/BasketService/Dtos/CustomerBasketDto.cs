@@ -11,7 +11,10 @@ namespace Store.Service.Services.BasketService.Dtos
     {
         public string?  Id { get; set; }
         public int? DeliveryMethodId { get; set; }
-        public decimal ShippingPrice { get; set; }
+        public double ShippingPrice { get; set; }
         public List<BasketItemDto> BasketItemDto {get; set; } = new List<BasketItemDto>();
+        public string? BasketId { get; set; }
+        public string? PaymentIntentId { get; set; }
+        public string? ClientSecret { get; set; } // stripe payment 
     }
 }

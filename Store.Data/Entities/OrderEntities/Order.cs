@@ -8,7 +8,7 @@ namespace Store.Data.Entities.OrderEntities
 {
     public class Order : BaseEntity<Guid>
     {
-        public string BuyingEmail { get; set; }
+        public string BuyerEmail { get; set; }
 
         public DateTimeOffset OrderDate { get; set; }
         public ShippingAddress ShippingAddress { get; set; }
@@ -20,6 +20,7 @@ namespace Store.Data.Entities.OrderEntities
         public decimal SubTotal { get; set; }
         public decimal GetTotal() => SubTotal + DeliveryMethod.Price;
         public string? BasketId { get; set; }
+        public string? PaymentIntentId { get; set; } // stripe
       
 
 

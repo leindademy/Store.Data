@@ -21,7 +21,7 @@ namespace Store.Service.Services.ProductServices
 
         public async Task<IReadOnlyList<BrandTypeDetailsDto>> GetAllBrandsAsync()
         {
-            var brands = await _unitOFWork.Repository<ProductBrand, int>().GetAllAsNotTrackAsinc();
+            var brands = await _unitOFWork.Repository<ProductBrand, int>().GetAllAsync();
             var mappedBrands = _mapper.Map<IReadOnlyList<BrandTypeDetailsDto>>(brands);
             return mappedBrands;
         }
@@ -30,7 +30,7 @@ namespace Store.Service.Services.ProductServices
         {
             var spec = new ProductWithSpecifications(input);
 
-            var products = await _unitOFWork.Repository<ProductEntity, int>().GetAllWithSpecificationAsinc(spec);
+            var products = await _unitOFWork.Repository<ProductEntity, int>().GetAllWithSpecificationAsync(spec);
 
             var CountSpecs = new ProductWithCountSpecification(input);
 
@@ -43,7 +43,7 @@ namespace Store.Service.Services.ProductServices
 
         public async Task<IReadOnlyList<BrandTypeDetailsDto>> GetAllTypesAsync()
         {
-            var types = await _unitOFWork.Repository<ProductType, int>().GetAllAsNotTrackAsinc();
+            var types = await _unitOFWork.Repository<ProductType, int>().GetAllAsync();
             var mappedTypes = types.Select(x => new BrandTypeDetailsDto
             {
                 Id = x.id,
@@ -60,7 +60,7 @@ namespace Store.Service.Services.ProductServices
                 throw new Exception("ProductId Is Null");
             var spec = new ProductWithSpecifications(productId);
 
-            var product = await _unitOFWork.Repository<ProductEntity, int>().GetWithSpecificationByIdAsinc(spec);
+            var product = await _unitOFWork.Repository<ProductEntity, int>().GetWithSpecificationByIdAsync(spec);
             if (product is null)
                 throw new Exception("Product Is Null");
 
