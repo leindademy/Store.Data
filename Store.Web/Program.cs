@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Store.Data.Context;
 using Store.Web.Extentions;
@@ -39,9 +40,16 @@ namespace Store.Web
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerDocumentation();
-     
+            builder.Services.AddCors(Options =>
+            {
+                Options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200", "http://localhost:2611");
+                });
+            });
 
             var app = builder.Build();
+
             await ApplySeeding.ApplySeedingAsync(app);
 
                 // Configure the HTTP request pipeline.
@@ -53,7 +61,10 @@ namespace Store.Web
             app.UseMiddleware<ExeptionMiddleware>();
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 

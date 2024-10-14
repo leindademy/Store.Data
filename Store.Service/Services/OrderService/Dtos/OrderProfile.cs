@@ -21,10 +21,8 @@ namespace Store.Service.Services.OrderService.Dtos
             CreateMap<OrderItem, OrderItemDto>()
                  .ForMember(des => des.ProductItemId, opt => opt.MapFrom(src => src.ProductItem.ProductId))
                  .ForMember(des => des.ProductName, opt => opt.MapFrom(src => src.ProductItem.ProductName))
+                 .ForMember(des => des.PictureUrl, opt => opt.MapFrom(src => src.ProductItem.PictureUrl))
                  .ForMember(des => des.ProductName, opt => opt.MapFrom<OrderItemPictureUrlResolver>()).ReverseMap();
-
-
-
         }
     }
 }

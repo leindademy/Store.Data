@@ -5,11 +5,8 @@ using Store.Repository.Interfaces;
 using Store.Repository.Specifications.OrderSpec;
 using Store.Service.Services.BasketService;
 using Store.Service.Services.OrderService.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Store.Service.Services.PaymentService;
+using Product = Store.Data.Entities.Product;
 
 namespace Store.Service.Services.OrderService
 {
@@ -18,12 +15,14 @@ namespace Store.Service.Services.OrderService
         private readonly IBasketService _basketService;
         private readonly IUnitOFWork _unitOFWork;
         private readonly IMapper _mapper;
+        private readonly IPaymentService _paymentService;
 
-        public OrderService(IBasketService basketService,IUnitOFWork unitOFWork,IMapper mapper)
+        public OrderService(IBasketService basketService,IUnitOFWork unitOFWork,IMapper mapper,IPaymentService paymentService)
         {
             _basketService = basketService;
             _unitOFWork = unitOFWork;
             _mapper = mapper;
+            _paymentService = paymentService;
         }
         public async Task<OrderDetailsDto> CreateOrderAsync(OrderDto input)
         {
@@ -59,9 +58,6 @@ namespace Store.Service.Services.OrderService
                 var mappedaOrderItem = _mapper.Map<OrderItemDto>(orderItem);
 
                 orderItems.Add(mappedaOrderItem);
-
-
-
             }
             #endregion
 
@@ -78,6 +74,14 @@ namespace Store.Service.Services.OrderService
             #endregion
 
             #region To Do ===>> Payment
+            var specs = new OrderWithPaymentIntentSpecification(basket.PaymentIntentId);
+
+            var existingOrder = await _unitOFWork.Repository<Order, Guid>().GetWithSpecificationByIdAsync(specs);
+
+            if(existingOrder is null)
+            {
+                await _paymentService.CreateOrUpdatePaymentIntent(basket);
+            }
             #endregion
 
             #region Create Order
@@ -93,22 +97,27 @@ namespace Store.Service.Services.OrderService
                 BasketId = input.BasketId,
                 BuyerEmail = input.BuyerEmail,
                 ShippingAddress = mappedShippingAddress,
+                PaymentIntentId = basket.PaymentIntentId
             };
-            await _unitOFWork.Repository<Order, Guid>().TaskAddAsync(order);
 
-            await _unitOFWork.CompleteAsync();
+            try
+            {
+                await _unitOFWork.Repository<Order, Guid>().TaskAddAsync(order);
 
-            var mappedOrder = _mapper.Map<OrderDetailsDto>(order);
+                await _unitOFWork.CompleteAsync();
+                var mappedOrder = _mapper.Map<OrderDetailsDto>(order);
 
-            return mappedOrder;
+                return mappedOrder;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             #endregion
-
         }
 
         public async Task<IReadOnlyList<DeliveryMethod>> GetAllDeliveryMethodsAsync()
-        
-          =>  await _unitOFWork.Repository<DeliveryMethod, int>().GetAllAsync();
-        
+          => await _unitOFWork.Repository<DeliveryMethod, int>().GetAllAsync();
 
         public async Task<OrderDetailsDto> GetOrderByIdAsync(Guid id)
         {
@@ -130,14 +139,18 @@ namespace Store.Service.Services.OrderService
 
             var orders =await _unitOFWork.Repository<Order, Guid>().GetAllWithSpecificationAsync(specs);
 
-            if (!orders.Any())
+            if (orders is { Count: <= 0 })
                 throw new Exception("You Don't Have Any Orders !");
 
             var mappedOrders = _mapper.Map<List<OrderDetailsDto>>(orders);
 
             return mappedOrders;
 
+        }
 
+        public Task<OrderDetailsDto> GetOrderByIdAndEmailAsync(Guid id, string? email)
+        {
+            throw new NotImplementedException();
         }
     }
 }

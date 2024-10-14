@@ -17,8 +17,12 @@ namespace Store.Web.Helper
                 try
                 {
                     var context = services.GetRequiredService<StoreDbContext>();
+                    var context2 = services.GetRequiredService<StoreIdentityDBContext>();
+
                     var UserManager = services.GetRequiredService<UserManager<AppUser>>();
+                    
                     await context.Database.MigrateAsync(); // If The DB is Not Created , It Will be Created
+                    await context2.Database.MigrateAsync();
 
                     await StoreContextSeed.SeedAsync(context, loggerfactory);
                     await StoreIdentityContextSeed.SeedUsersAsync(UserManager); 

@@ -26,8 +26,6 @@ namespace Store.Service.Services.PaymentService
             _basketService = basketService;
             _mapper = mapper;
         }
-        // wait
-        // gimme a second
         public async Task<CustomerBasketDto> CreateOrUpdatePaymentIntent(CustomerBasketDto basket)
         {
             StripeConfiguration.ApiKey = _configuration["Stripe::SecretKey"];
